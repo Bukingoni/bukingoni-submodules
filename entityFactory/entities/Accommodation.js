@@ -1,12 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-class User extends Sequelize.Model {
+class Accommodation extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        UserID: {
+        AccommodationID: {
           type: DataTypes.BIGINT.UNSIGNED,
-          field: 'UserID',
+          field: 'AccommodationID',
           primaryKey: true,
           unique: true,
           validate: { min: 1 },
@@ -21,28 +21,12 @@ class User extends Sequelize.Model {
         }
       },
       {
-        modelName: 'User',
-        tableName: 'User',
+        modelName: 'Accommodation',
+        tableName: 'Accommodation',
         sequelize,
       }
     );
   }
-
-  static associate(models) {
-    const {
-      Role,
-      UserRole,
-    } = models;
-
-    this.belongsToMany(Role, {
-      as: 'Roles',
-      through: UserRole,
-      foreignKey: 'UserID',
-      allowNull: false,
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE',
-    });
-  }
 }
 
-module.exports = User;
+module.exports = Accommodation;
