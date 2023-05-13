@@ -23,3 +23,13 @@ module.exports.recursiveInclude = (include, entityFactory) => {
       []
     );
   };
+
+module.exports.shouldListAll = (params) => {
+  const page = Number(params.page?.offset);
+  const pageSize = Number(params?.page?.limit);
+  const listAll = Boolean(params.listAll);
+
+  const havePage = !isNaN(page) && pageSize >= 0;
+  const havePageSize = !isNaN(pageSize) && pageSize >= 0;
+  return listAll || !havePage || !havePageSize;
+};
