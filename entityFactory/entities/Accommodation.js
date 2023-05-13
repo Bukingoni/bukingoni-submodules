@@ -17,6 +17,7 @@ class Accommodation extends Sequelize.Model {
         Name: {
             type: DataTypes.STRING(50),
             field: 'Name',
+            unique: 'True',
             allowNull: false,
         },
         Benefits: {
