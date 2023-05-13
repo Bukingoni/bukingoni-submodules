@@ -47,12 +47,12 @@ class Accommodation extends Sequelize.Model {
             defaultValue: '',
         },
         Lat: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.FLOAT,
             field: 'Lat',
             allowNull: true,
         },
         Lng: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.FLOAT,
             field: 'Lng',
             allowNull: true,
         },
