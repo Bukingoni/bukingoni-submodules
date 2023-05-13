@@ -14,10 +14,30 @@ class Accommodation extends Sequelize.Model {
           autoIncrement: false,
           defaultValue: Sequelize.fn('UUID_SHORT'),
         },
-        FirstName: {
+        Name: {
             type: DataTypes.STRING(50),
-            field: 'FirstName',
+            field: 'Name',
             allowNull: false,
+        },
+        Benefits: {
+            type: DataTypes.STRING(255),
+            field: 'Benefits',
+            allowNull: true,
+            defaultValue: '',
+        },
+        MinNumberOfGuests: {
+            type: DataTypes.BIGINT.UNSIGNED,
+            field: 'MinNumberOfGuests',
+            allowNull: false,
+            validate: { min: 1 },
+            defaultValue: 1,
+        },
+        MaxNumberOfGuests: {
+            type: DataTypes.BIGINT.UNSIGNED,
+            field: 'MaxNumberOfGuests',
+            allowNull: false,
+            validate: { min: 1 },
+            defaultValue: 1,
         }
       },
       {
