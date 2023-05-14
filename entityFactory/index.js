@@ -189,9 +189,12 @@ async function emptyDatabase() {
   for (const entity of entities) {
     const importedEntity = require(path.join(__dirname, "entities", entity));
     entityInstance = importedEntity.init(this.instance);
-    await entityInstance.destroy({
-      where: {},
-      truncate: true,
-    });
+    try {
+      await entityInstance.destroy({
+        where: {},
+      });
+    } catch (e) {
+      logger.error(`Error deleting entity ${entity}: ${e}`);
+    }
   }
 }
