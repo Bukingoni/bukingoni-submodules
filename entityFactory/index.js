@@ -1,11 +1,11 @@
 /* istanbul ignore file */
 
-const sequelize = require('sequelize');
-const fs = require('fs');
-const path = require('path');
+const sequelize = require("sequelize");
+const fs = require("fs");
+const path = require("path");
 
-const logger = require('@logger');
-const config = require('@config');
+const logger = require("@logger");
+const config = require("@config");
 
 module.exports = {
   init: init,
@@ -13,6 +13,7 @@ module.exports = {
   instance: null,
   entities: {},
   close: close,
+  emptyDatabase: emptyDatabase,
 };
 
 const childTables = [];
@@ -42,7 +43,7 @@ function getEntity(entityName) {
 }
 
 function getSequelizeInstance() {
-  if (!this.instance || process.env.NODE_ENV === 'test') {
+  if (!this.instance || process.env.NODE_ENV === "test") {
     this.instance = new sequelize(
       config.database.name,
       config.database.username,
@@ -85,9 +86,9 @@ function getSequelizeInstance() {
         define: {
           underscored: false,
           freezeTableName: false,
-          charset: 'utf8',
+          charset: "utf8",
           dialectOptions: {
-            collate: 'utf8_general_ci',
+            collate: "utf8_general_ci",
           },
           timestamps: false,
         },
@@ -112,10 +113,10 @@ function getSequelizeInstance() {
             try {
               if (
                 options?.customOptions?.EntityName &&
-                entity?.customOptions?.EntityName !== 'DrugSerbia'
+                entity?.customOptions?.EntityName !== "DrugSerbia"
               ) {
                 const createParams = {
-                  Action: 'CREATE',
+                  Action: "CREATE",
                   EntityName: options.customOptions.EntityName,
                   EntityID: options.customOptions.EntityID,
                   CreatedAt: new Date().toUTCString(),
@@ -123,7 +124,7 @@ function getSequelizeInstance() {
                   CreatedBy: options.customOptions.UserID,
                 };
 
-                await this.entities['AuditLog'].create(createParams, {
+                await this.entities["AuditLog"].create(createParams, {
                   transaction: options?.transaction ?? null,
                 });
               }
@@ -135,7 +136,7 @@ function getSequelizeInstance() {
             try {
               if (
                 entity?.customOptions?.EntityName &&
-                entity?.customOptions?.EntityName !== 'DrugSerbia'
+                entity?.customOptions?.EntityName !== "DrugSerbia"
               ) {
                 const createParams = {
                   Action: entity.customOptions.Action,
@@ -146,7 +147,7 @@ function getSequelizeInstance() {
                   CreatedBy: entity.customOptions.UserID,
                 };
 
-                await this.entities['AuditLog'].create(createParams, {
+                await this.entities["AuditLog"].create(createParams, {
                   transaction: entity.transaction ?? null,
                 });
               }
@@ -163,24 +164,34 @@ function getSequelizeInstance() {
 }
 
 function collectEntities() {
-  const entities = fs.readdirSync(path.join(__dirname, 'entities'));
+  const entities = fs.readdirSync(path.join(__dirname, "entities"));
   // Entities initialization
   for (const entity of entities) {
-    const entityName = path.basename(entity, '.js');
-    const importedEntity = require(path.join(__dirname, 'entities', entity));
+    const entityName = path.basename(entity, ".js");
+    const importedEntity = require(path.join(__dirname, "entities", entity));
     this.entities[entityName] = importedEntity.init(this.instance);
     if (childTables.includes(entityName)) {
-      this.entities[entityName].removeAttribute('id');
+      this.entities[entityName].removeAttribute("id");
     }
     logger.debug(`Defining - ${entityName}`);
   }
 
   // Entities association
   for (const entity in this.entities) {
-    if (typeof this.entities[entity].associate === 'function') {
+    if (typeof this.entities[entity].associate === "function") {
       this.entities[entity].associate(this.entities);
     }
   }
 }
 
-
+async function emptyDatabase() {
+  const entities = fs.readdirSync(path.join(__dirname, "entities"));
+  for (const entity of entities) {
+    const importedEntity = require(path.join(__dirname, "entities", entity));
+    entityInstance = importedEntity.init(this.instance);
+    await entityInstance.destroy({
+      where: {},
+      truncate: true,
+    });
+  }
+}

@@ -1,6 +1,6 @@
-const Ajv = require('ajv');
-const addFormats = require('ajv-formats');
-const services = require('../services');
+const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
+const services = require("../services");
 
 module.exports.validateObject = (
   properties,
@@ -11,7 +11,7 @@ module.exports.validateObject = (
   const ajv = new Ajv();
   addFormats(ajv);
   const schema = {
-    type: 'object',
+    type: "object",
     properties,
     required,
     additionalProperties,
@@ -26,7 +26,11 @@ module.exports.validateObject = (
   return null;
 };
 
-module.exports.checkEntityExists = async (params = {}, optional = {}, include = []) => {
+module.exports.checkEntityExists = async (
+  params = {},
+  optional = {},
+  include = []
+) => {
   const whereParams = {
     [`${params.EntityName}ID`]: params.EntityID,
     ...optional,
