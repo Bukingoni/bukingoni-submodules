@@ -78,13 +78,22 @@ class Accommodation extends Sequelize.Model {
   }
 
   static associate(models) {
-    const { User } = models;
+    const { User, Attachment, AccommodationAttachment } = models;
 
     this.belongsTo(User, {
       foreignKey: {
         name: "OwnerID",
         allowNull: false,
       },
+    });
+
+    this.belongsToMany(Attachment, {
+      as: "Attachments",
+      through: AccommodationAttachment,
+      foreignKey: "AccommodationID",
+      allowNull: false,
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE"
     });
   }
 }
