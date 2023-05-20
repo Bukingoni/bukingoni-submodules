@@ -53,3 +53,5 @@ class Attachment extends Sequelize.Model {
         });
     }
 }
+
+module.exports = Attachment;

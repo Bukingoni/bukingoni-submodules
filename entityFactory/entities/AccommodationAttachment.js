@@ -30,3 +30,4 @@ class AccommodationAttachment extends Sequelize.Model {
         });
     }
 }
+module.exports = AccommodationAttachment;
